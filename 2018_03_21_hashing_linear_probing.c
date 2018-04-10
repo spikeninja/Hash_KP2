@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+//this comment will be delete
 #define KEY int
 #define HASH(x,y) (x)%(y)
 #define HASH_DA(key) (key)
 #define EQUAL(x,y) (x)==(y)
-#define MAX 10
+#define MAX 523
 
 typedef struct {
     KEY * key;
@@ -45,7 +45,7 @@ int main(){
             printf("\nBad allocation!");
             exit(1);
         }
-        *(it->key) = rand() % 10000;
+        *(it->key) = rand() % 13000;
         printf("Item %5d was inserted in \t%d index\n", *(it->key), hash_tbl_insert(h, it));
     }
     printf("\n-------- SEARCH --------\n");
@@ -53,7 +53,7 @@ int main(){
         int key = 0;
         it = (h->array)[rand()%h->m];
         if (it)    key = *(it->key);
-        else key = rand()% 10000;
+        else key = rand()% 13000;
         printf("Item with key = %5d in \t%d index\n", key, hash_tbl_search(h, key));
 
     }
