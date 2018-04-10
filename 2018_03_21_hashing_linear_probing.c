@@ -4,6 +4,7 @@
 
 #define KEY int
 #define HASH(x,y) (x)%(y)
+#define HASH_DA(key) (key)
 #define EQUAL(x,y) (x)==(y)
 #define MAX 10
 
