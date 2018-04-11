@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//this comment will be delete
+
 #define KEY int
-#define HASH(x,y) (x)%(y)
-#define HASH_DA(key) (key)
+#define HASH(key) (key)
 #define EQUAL(x,y) (x)==(y)
 #define MAX 523
+#define MAX_V 13000
 
 typedef struct {
     KEY * key;
@@ -35,7 +35,7 @@ int main(){
         exit(1);
     }
     printf("\n-------- INIT HASH-TABLE --------\n");
-    hash_tbl_init(h, MAX);
+    hash_tbl_init(h, MAX_V);
     srand(time(NULL));
     printf("\n-------- INSERT --------\n");
     for(int i = 0; i < MAX; i++){
@@ -45,7 +45,7 @@ int main(){
             printf("\nBad allocation!");
             exit(1);
         }
-        *(it->key) = rand() % 13000;
+        *(it->key) = rand() % MAX_V;
         printf("Item %5d was inserted in \t%d index\n", *(it->key), hash_tbl_insert(h, it));
     }
     printf("\n-------- SEARCH --------\n");
@@ -53,12 +53,12 @@ int main(){
         int key = 0;
         it = (h->array)[rand()%h->m];
         if (it)    key = *(it->key);
-        else key = rand()% 13000;
+        else key = rand()% MAX_V;
         printf("Item with key = %5d in \t%d index\n", key, hash_tbl_search(h, key));
 
     }
     printf("\n-------- DELETE --------\n");
-    for(int i = 0; i < 2*MAX; i++){
+    for(int i = 0; i < MAX_V; i++){
         it = (h->array)[rand()%h->m];
         if (it)    {
             printf("Item with key = %5d was deleted ",*(it->key));
@@ -72,7 +72,7 @@ int main(){
 }
 void hash_tbl_init(hash_tbl * ht,int max){
     ht->n = 0;
-    ht->m = MAX * 2;
+    ht->m = max+1;
     ht->array = (item **)malloc((ht->m) * sizeof(item *));
     if (!ht->array) {
         printf("\nBad allocation!");
@@ -88,7 +88,8 @@ int hash_tbl_count(hash_tbl * ht){
 }
 int hash_tbl_insert(hash_tbl * ht, item * it){
     KEY k = *(it->key);
-    int i = HASH(k, ht->m);
+    //int i = HASH(k, ht->m);
+    int i = HASH(k);
     while(ht->array[i]){
         i = (i + 1) % ht-> m;
     }
@@ -99,7 +100,8 @@ int hash_tbl_insert(hash_tbl * ht, item * it){
 }
 int hash_tbl_search(hash_tbl * ht, KEY k){
     int count = 0;
-    int i = HASH(k, ht -> m);
+    //int i = HASH(k, ht -> m);
+    int i = HASH(k);
     while(ht->array[i]){
         count++;
         if(EQUAL(k, *((ht->array)[i] -> key))){
@@ -114,7 +116,8 @@ int hash_tbl_search(hash_tbl * ht, KEY k){
 }
 
 int hash_tbl_delete(hash_tbl * ht, item * it){
-    int i = HASH(*(it->key), ht->m);
+    //int i = HASH(*(it->key), ht->m);
+    int i = HASH(*(it->key));
     item * v = NULL;
     int cnt = 0;
     int tr = 1;
@@ -127,10 +130,10 @@ int hash_tbl_delete(hash_tbl * ht, item * it){
         }
     }
     if(!(ht->array)[i]){
-        printf("%d",cnt);
+        printf("%d ",cnt);
         return -1;
     }
-    printf("%d",cnt);
+    printf("%d ",cnt);
     item_free(&((ht->array)[i]));
     (ht->n)--;
     cnt = 0;
@@ -143,7 +146,7 @@ int hash_tbl_delete(hash_tbl * ht, item * it){
         hash_tbl_insert(ht, v);
         j = (j+1) % ht->m;
     }
-    printf("%d",cnt);
+    printf("%d ",cnt);
     return i;
 }
 void item_free(item ** v){
